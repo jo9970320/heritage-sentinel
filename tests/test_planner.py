@@ -7,7 +7,7 @@ from restoration_graph import ACTIONS, START, GOAL, available_actions, apply_act
 
 
 from planner import bfs_search
-import restoration_graph as rg #gives the restoration graph a nickname
+import restoration_graph as rg #gives the restoration graph a nickname/alias
 import taco_graph as tc #same thing for taco graph
 
 class TestPlanner(unittest.TestCase):
