@@ -2,9 +2,9 @@ import unittest
 import os
 import sys
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from restoration_graph import ACTIONS, START, GOAL, available_actions, apply_action
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from planner import bfs_search
 import restoration_graph as rg #gives the restoration graph a nickname
@@ -61,20 +61,57 @@ def test_plan_has_no_duplicate_actions():
 
 
 def test_no_solution_returns_none():
-    # TODO: this is your job. Construct a problem where the goal is
-    # unreachable — e.g. a goal that includes an action name not in
-    # ACTIONS, or an action whose "requires" set can never be satisfied
-    # (a circular or impossible prerequisite). Then assert that
-    # bfs_search returns None instead of crashing or hanging forever.
-    ...
+    impossible_goal = GOAL | {"impossible_action"}
+    plan = bfs_search(
+        START,
+        impossible_goal,
+        available_actions,
+        apply_action
+    )
+    assert plan is None
 
 
 def test_large_action_set_terminates():
-    # TODO: build a bigger synthetic ACTIONS dict (15-20 actions, chained
-    # prerequisites) and assert bfs_search still returns within a couple
-    # of seconds. This isn't about speed — it's about proving the search
-    # actually terminates instead of looping.
-    ...
+    actions = {}
+
+    for i in range(20):
+        action = f"action_{i}"
+
+        if i == 0:
+            requires = set()
+        else:
+            requires = {f"action_{i - 1}"}
+
+        actions[action] = {
+            "requires": requires
+        }
+
+    start = frozenset()
+    goal = frozenset(actions.keys())
+
+    def available_actions_large(state):
+        available = []
+
+        for action in actions:
+            if action not in state and actions[action]["requires"].issubset(state):
+                available.append(action)
+
+        return available
+
+    def apply_action_large(state, action):
+        return state | {action}
+
+    plan = bfs_search(
+        start,
+        goal,
+        available_actions_large,
+        apply_action_large
+    )
+
+    assert plan is not None
+    assert is_valid_plan(plan, actions)
+
+
 
 if __name__ == '__main__':
     unittest.main()
