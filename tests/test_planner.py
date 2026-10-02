@@ -30,17 +30,34 @@ class TestPlanner(unittest.TestCase):
     def test_taco_plan(self):
         self.check_plan_validity(tc)
 
-def is_valid_plan(plan, actions=ACTIONS):
+
+def is_valid_plan(plan, actions=ACTIONS, tranche_cap=None):
     """A plan is valid if every action's prerequisites are satisfied by
     the actions before it, and every required action appears exactly once."""
     completed = set()
+
     for action in plan:
         if action in completed:
-            return False          # duplicate action
+            return False
+
         if not actions[action]["requires"].issubset(completed):
-            return False          # prerequisite violated
+            return False
+
         completed.add(action)
-    return completed == set(actions.keys())
+
+    if completed != set(actions.keys()):
+        return False
+
+    if tranche_cap is not None:
+        early_cost = 0
+
+        for action in plan[:2]:
+            early_cost += actions[action]["cost"]
+
+        if early_cost > tranche_cap:
+            return False
+
+    return True
 
 
 def test_finds_a_valid_plan():
