@@ -15,10 +15,21 @@ def build_constraints(actions=ACTIONS, tranche_cap=4):
     # 2. TODO: prerequisites. For each action and each action it requires,
     #    add a constraint on the pair (required, action) saying the
     #    required action's slot is smaller.
+    for action, info in actions.items():
+        for required in info["requires"]:
+            constraints.append(((required, action), lambda r, a: r < a)) #taken from the above, lambda
 
     # 3. TODO: tranche rule. One constraint over ALL variables: the summed
     #    cost of every action whose slot is <= 2 must be <= tranche_cap.
     #    Hint: scope = tuple(VARIABLES); the check function receives one
     #    slot per variable, in that same order.
+    def tranche_valid(*slots):
+        total = 0
+        for name, slot in zip(VARIABLES, slots):
+            if slot <= 2:
+                total += actions[name]["cost"]
+        return total <= tranche_cap
+
+    constraints.append((tuple(VARIABLES), tranche_valid))
 
     return constraints
