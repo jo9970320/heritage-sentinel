@@ -11,10 +11,10 @@ def forward_chain(facts, clauses):
     while changed:
         changed = False
         for premises, conclusion in clauses:
-            # TODO: if `conclusion` is not yet known and every premise IS
-            # known, then add the conclusion to `known`, record the premises
-            # in `why[conclusion]`, and set `changed = True`.
-            ...
+            if conclusion not in known and premises.issubset(known):
+                known.add(conclusion)
+                why[conclusion] = premises
+                changed = True
     return known, why
 
 
