@@ -22,3 +22,12 @@ The while loop is ends because it is bounded by a finite ruleset/list of symbol/
 2. Why does explain call sorted(premises)? (Think back to Lab 3.)
 
 Premises is a frozenset, a collection of strings with no fixed order. Sorted puts them in a uniform alphabetical order, so the proof lines come out the same on every run. Without it, the rejection log could differ between runs even though the reports and rules didn’t change, so it couldn’t be compared or trusted as a record.
+
+Part D
+
+The same report can be rejected for the same reason but show different steps depending on rule order, so keeping the order consistent makes the log easier to check during an audit.
+
+Part E
+
+
+This rule is not possible to write, using the current Horn clauses because they only check facts that are present, not whether damage is missing. To make it work, I could have to_facts add a no_damage fact when the damage list is empty, then write a rule that rejects a report with both severity_major and no_damage. This would require extra code to check for an empty list, and it would assume the report lists all damage, so an empty list means there is no damage rather than someone forgetting to record it.

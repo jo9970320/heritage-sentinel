@@ -9,3 +9,5 @@
 {"id": "r9", "material": "stone", "damage": ["rot", "crack", "loose_base"], "severity": "minor"}
 {"id": "r10", "material": "metal", "damage": []}
 {"id": "r11", "material": "marble", "damage": ["crack"], "severity": "minor"}
+{"id": "r12", "material": "stone", "damage": ["microfracture", "loose_base"], "severity": "minor"}
+{"id": "r13", "material": "metal", "damage": ["acid_damage"], "severity": "minor"}
