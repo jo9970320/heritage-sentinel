@@ -13,3 +13,12 @@ When variables was created from a set, the plan could change between separate ru
 2. Your Lab 2 oracle was correct when you wrote it. What does its failure here tell you about tests over time?
 The old oracle becoming incomplete shows that tests need to evolve when the system's requirements change, especially if the tests were correct when they were orginally
 written.
+
+Lab 1 P4
+1. Why does the while loop always terminate? What quantity grows each pass, and what bounds it?
+
+The while loop is ends because it is bounded by a finite ruleset/list of symbol/labels. So through each pass, it finds atleast one of these symbols and grows the known, but is only capable of doing so for each unique symbol. As such, it'll always end, and consequently ends because it is bounded to the amount of symbols in the ruleset
+
+2. Why does explain call sorted(premises)? (Think back to Lab 3.)
+
+Premises is a frozenset, a collection of strings with no fixed order. Sorted puts them in a uniform alphabetical order, so the proof lines come out the same on every run. Without it, the rejection log could differ between runs even though the reports and rules didn’t change, so it couldn’t be compared or trusted as a record.
