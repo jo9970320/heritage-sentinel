@@ -31,3 +31,28 @@ Part E
 
 
 This rule is not possible to write, using the current Horn clauses because they only check facts that are present, not whether damage is missing. To make it work, I could have to_facts add a no_damage fact when the damage list is empty, then write a rule that rejects a report with both severity_major and no_damage. This would require extra code to check for an empty list, and it would assume the report lists all damage, so an empty list means there is no damage rather than someone forgetting to record it.
+
+Lab 1 P5
+Predictions:
+{"id": "a100", "material": "stone", "damage": ["fading"], "severity": "minor"} - Accept because fading on stone is normal and plausible
+{"id": "a-odd1", "material": "stone", "damage": ["corrosion"], "severity": "minor"} - Quarantine because corrosion on stone is unusual however not impossible
+{"id": "a-odd2", "material": "ceramic", "damage": ["crack", "fading", "corrosion"], "severity": "major"} - Quarantine because corrosion on ceramic is highly unlikely but still not impossible
+{"id": "a-odd3", "material": "textile", "damage": ["crack", "loose_base"], "severity": "major"} - Quarantine due to a textile object with both a crack and a loose base is unusual
+{"id": "a-bad1", "material": "stone", "damage": ["rot"], "severity": "minor"} - Reject because rot on stone violates the logic rules
+{"id": "a-bad2", "material": "marble", "damage": ["crack"], "severity": "minor"} - Reject because marle is not a recognized material in the schema
+1. The predictions matched the pipeline's results. Reports a-odd1, a-odd2, a-odd3 were quarantined as they were statistically unusual, while a-bad1 and a-bad2 were rejected as they violated the validation rules
+
+Independence:
+2. The model assumes that damage types are independent however, a crack could realistically weaken the structure and cause the base to become lose. In other words, the presence of one type of damage could increase the likelihood of another.
+
+Parameters:
+3. The model has 35 free parameters which are 4 for materials, 25 for damage probabilities, and 6 for severity. Having 400 reference reports is able to provide a reasonable amount of data, but with only 40 reports, the probability estimates would be less reliable due to some damage combinations rarly or never appearing.
+
+Smoothing:
+4. A realistic situation would be receiving a report with a damage combination that was never seen in the historical data. Without smoothing, the model would be able to assign it a probability of zero which can cause an error when calculating its log-likelihood.
+
+Calibration:
+5. The gap was small because the training and test reports were generated using the same probability distributions which led to their patterns being similar. The gap could become larger if the model overfitted the training data, had fewer reference reports, or the new reports came from a different distribution.
+
+Quaratine versus reject:
+6. The system quarantines rare but valid reports for human review, which could delay important discoveries. If missing a rare discovery were more costly than accepting a typo, I would lower the likelihood threshold so that fewer reports get quarantined, but this would also allow more incorrect reports to be accepted.
